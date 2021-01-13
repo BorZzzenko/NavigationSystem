@@ -1,10 +1,21 @@
+from geopy import Nominatim
+
 from GeocodingSearch import GeocodingSearch
+
 
 class GeocodingAPI(GeocodingSearch):
     """Делает запросы геокодирования к API"""
+    def __init__(self):
+        self.__locator = Nominatim(user_agent="myGeocoder")
 
     def find_address(self, longitude: float, latitude: float):
-        return "Россия, Барнаул, пр. Северный Власихинский 64"
+        coordinates = str(latitude), str(longitude)
+        location = self.__locator.reverse(coordinates)
+        address = location.address
+
+        return address
 
     def find_coordinates(self, address: str):
-        return 83.51, 53.25
+        location = self.__locator.geocode(address)
+
+        return location.longitude, location.latitude

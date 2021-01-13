@@ -1,10 +1,11 @@
+from Geocoder import Geocoder
+from GeocodingAPI import GeocodingAPI
 from NavigationSystem import NavigationSystem
 
 if __name__ == '__main__':
-    system = NavigationSystem()
-    system.add_owner("biker")
+    test = Geocoder()
+    res = test.find_address(83.673968, 53.334355)
+    print()
 
-    owners = system.get_owners()
-
-    system.give_order(owners[0], "Россия, Барнаул, ул. Балтийская 61")
-    system.perform_move()
+    result = test.find_coordinates("Россия, Барнаул, ул. Балтийская 59")
+    print()
