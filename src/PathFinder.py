@@ -1,5 +1,3 @@
-import math
-import sys
 from abc import ABC, abstractmethod
 
 
@@ -8,6 +6,12 @@ class PathFinder(ABC):
         self._road_graph = None
 
     def _path_id_to_path_coordinates(self, path):
+        """
+        Добавляет к списку osm id их координаты
+
+        :param path: list of osm id's
+        :return: [{"id": int, "longitude": float, "latitude": float}, ...]
+        """
         res = []
 
         for node in path:
@@ -21,35 +25,8 @@ class PathFinder(ABC):
 
         return res
 
-    def _find_nearest_node(self, longitude, latitude):
-        nodes = self._road_graph.nodes._nodes
-
-        min_id = 0
-        min_distance = sys.maxsize
-        min_x = 0
-        min_y = 0
-
-        for node in nodes.keys():
-            lat = nodes[node]["y"]
-            lon = nodes[node]["x"]
-
-            # distance = ((longitude - lon) ** 2) + ((latitude - lat) ** 2) ** 0.5
-
-            dlat = latitude - lat
-            dlon = longitude - lon
-            dist2 = dlat * dlat + dlon * dlon
-            distance = math.sqrt(dist2)
-
-            if distance < min_distance:
-                min_id = node
-                min_distance = distance
-                min_x = lon
-                min_y = lat
-
-        return min_id
-
-
     @abstractmethod
     def find_path(self, start_longitude: float, start_latitude: float,
                   destination_longitude: float, destination_latitude: float):
+        """Построение маршрута"""
         pass
