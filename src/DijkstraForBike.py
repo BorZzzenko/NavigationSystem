@@ -24,4 +24,11 @@ class DijkstraForBike(PathFinder):
         # Добавляем в список координаты вершин
         path = self._path_id_to_path_coordinates(path)
 
+        # Добавляем в список точку назначения
+        path.append({
+            "id": "",
+            "longitude": destination_longitude,
+            "latitude": destination_latitude
+        })
+
         return path

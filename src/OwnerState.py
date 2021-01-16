@@ -6,13 +6,11 @@ class OwnerState(ABC):
         self._owner = owner
 
     @abstractmethod
-    def set_destination(self, latitude: float, longitude: float):
-        pass
-
-    @abstractmethod
-    def prepare_for_move(self):
+    def set_destination(self, longitude: float, latitude: float):
+        """Установить точку назначения"""
         pass
 
     @abstractmethod
     def perform_move(self):
+        """Совершить движение"""
         pass

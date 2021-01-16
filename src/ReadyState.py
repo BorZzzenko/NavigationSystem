@@ -3,23 +3,21 @@ from OwnerState import OwnerState
 
 
 class ReadyState(OwnerState):
-    def set_destination(self, latitude: float, longitude: float):
-        pass
+    def set_destination(self, longitude: float, latitude: float):
+        # Устанавливаем точку назначения
+        navigator = self._owner.get_navigator()
+        navigator.set_destination(longitude, latitude)
 
-    def prepare_for_move(self):
-        print("Теперь есть цель")
+        location = navigator.get_location()
 
-        device = self._owner.get_device()
-
-        destination = device.get_destination()
-        location = device.get_location()
-
+        # Находим маршрут
         path_finder = self._owner.get_path_finder()
-        path = path_finder.find_path(*location, *destination)
+        path = path_finder.find_path(*location, longitude, latitude)
 
-        self._owner.get_navigator().make_tips(path)
+        navigator.set_path(path)
 
+        # Изменяем состояние
         self._owner.change_state(MoveState(self._owner))
 
     def perform_move(self):
-        print("У меня нет цели, а значит и нет пути")
+        pass

@@ -6,26 +6,22 @@ class MoveState(OwnerState):
     def __init__(self, owner):
         super().__init__(owner)
 
-    def set_destination(self, latitude: float, longitude: float):
+    def set_destination(self, longitude: float, latitude: float):
         pass
 
-    def prepare_for_move(self):
-        print("У меня уже есть цель")
-
     def perform_move(self):
-        device = self._owner.get_device()
+        navigator = self._owner.get_navigator()
 
+        # Совершаем одно движение
         move_action = self._owner.get_move_action()
-        move_action.move(device)
+        move_action.move(navigator)
 
-        location = device.get_location()
-        destination = device.get_destination()
-        notifier = self._owner.get_notifier()
+        location = navigator.get_location()
+        destination = navigator.get_destination()
 
-        if notifier is not None:
-            notifier.get_notification(*location, 500)
-
+        # Проверяем достигли ли точки назначения
         if location == destination:
-            print("Я завершил свой путь")
+            # Изменяем состояние
             self._owner.change_state(ReadyState.ReadyState(self._owner))
+            # Уведомляем менеджера
             self._owner.notify()

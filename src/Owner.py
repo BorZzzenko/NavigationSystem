@@ -9,7 +9,7 @@ class Owner:
     def __init__(self):
         self._observers = list()
         self._move_action = None
-        self._navigator = Navigator.Navigator(83.51, 53.22)
+        self._navigator = Navigator.Navigator(83.7813856, 53.3448302)
         self._path_finder = None
         self._navigator.set_owner(self)
         self._state = ReadyState(self)
@@ -32,13 +32,6 @@ class Owner:
         то двигаемся
         """
         self._state.perform_move()
-
-    def prepare_for_move(self):
-        """Подготовка к движению
-
-        Находим маршрут через PathFinder, формируем подсказки в Navigator
-        """
-        self._state.prepare_for_move()
 
     def change_state(self, state):
         self._state = state

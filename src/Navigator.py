@@ -1,3 +1,6 @@
+import math
+from geopy import distance
+
 from Owner import Owner
 
 
@@ -17,6 +20,9 @@ class Navigator:
         self.__destination_longitude = longitude
         self.__destination_latitude = latitude
 
+    def set_path(self, path):
+        self.__remaining_path = path
+
     def get_destination(self):
         return self.__destination_longitude, self.__destination_latitude
 
@@ -27,21 +33,41 @@ class Navigator:
         self.__owner = owner
 
     def get_current_target_coordinates(self):
-        pass
+        """Возврашает координаты текущей промежуточной точки назначения из построенного маршрута"""
+        lat = self.__remaining_path[0]["latitude"]
+        lon = self.__remaining_path[0]["longitude"]
+
+        return lon, lat
 
     def get_next_target_coordinates(self):
         pass
 
-    def update_location(self):
-        pass
+    def update_location(self, longitude: float, latitude: float):
+        self.__latitude = latitude
+        self.__longitude = longitude
 
     def get_navigation_tip(self):
         pass
 
-    def compute_angle(self, current_latitude: float, current_longitude: float,
-                      target_latitude: float, target_longitude: float):
-        pass
+    @staticmethod
+    def compute_direction_angle(current_longitude: float, current_latitude: float,
+                                target_longitude: float, target_latitude: float):
+        """Вычисляет угол представляющий направления движения от одной точки к другой"""
 
-    def compute_distance(self, current_latitude: float, current_longitude: float,
-                         target_latitude: float, target_longitude: float):
-        pass
+        delta_lat = target_latitude - current_latitude
+        delta_lon = target_longitude - current_longitude
+        angle = math.atan2(delta_lat, delta_lon)
+
+        return angle
+
+    @staticmethod
+    def compute_distance(current_longitude: float, current_latitude: float,
+                         target_longitude: float, target_latitude: float):
+        """Вычисляет расстояние между двумя точками в метрах"""
+
+        return distance.geodesic((current_latitude, current_longitude),
+                                 (target_latitude, target_longitude)).meters
+
+    def set_next_target(self):
+        """Меняем текущую промежуточную точку"""
+        self.__remaining_path.pop(0)
