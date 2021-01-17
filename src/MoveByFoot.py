@@ -3,10 +3,9 @@ from Movable import Movable
 
 class MoveByFoot(Movable):
     """Движение пешком"""
-    def __init__(self):
-        self.__speed = 1
 
-    def move(self, navigator):
-        print("Иду пешком(")
-        navigator.update_location()
+    def __init__(self):
+        super().__init__()
+        self._speed = 0.000001
+        self._min_distance_radius = 5
 
