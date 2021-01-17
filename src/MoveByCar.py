@@ -7,6 +7,7 @@ class MoveByCar(Movable):
     """Движение на машине"""
     def __init__(self):
         self.__speed = 0.0001
+        self.__min_distance_radius = 10
 
     def move(self, navigator):
         # Получаем текущие координаты и координаты следующей точки в маршруте
@@ -16,7 +17,7 @@ class MoveByCar(Movable):
         # Если расстояние между ними меньше 10 метров,
         # Считаем что достигли этой точки
         distance = navigator.compute_distance(*location, *next_point)
-        if distance <= 10:
+        if distance <= self.__min_distance_radius:
             navigator.update_location(*next_point)
             navigator.set_next_target()
             return

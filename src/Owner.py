@@ -7,9 +7,11 @@ class Owner:
     """Класс владельца устройства"""
 
     def __init__(self):
+        start_location = (83.7813856, 53.3448302)
+
         self._observers = list()
         self._move_action = None
-        self._navigator = Navigator.Navigator(83.7813856, 53.3448302)
+        self._navigator = Navigator.Navigator(*start_location)
         self._path_finder = None
         self._navigator.set_owner(self)
         self._state = ReadyState(self)
