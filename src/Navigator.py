@@ -1,5 +1,6 @@
 import math
 from geopy import distance
+import osmnx as ox
 
 from Owner import Owner
 
@@ -29,6 +30,9 @@ class Navigator:
     def get_location(self):
         return self.__longitude, self.__latitude
 
+    def get_path(self):
+        return self.__remaining_path
+
     def set_owner(self, owner: Owner):
         self.__owner = owner
 
@@ -40,19 +44,73 @@ class Navigator:
         return lon, lat
 
     def get_next_target_coordinates(self):
-        pass
+        """Возврашает координаты следующей промежуточной точки назначения из построенного маршрута"""
+        if len(self.__remaining_path) > 1:
+            lat = self.__remaining_path[1]["latitude"]
+            lon = self.__remaining_path[1]["longitude"]
+
+            return lon, lat
+
+        return None
 
     def update_location(self, longitude: float, latitude: float):
         self.__latitude = latitude
         self.__longitude = longitude
 
     def get_navigation_tip(self):
-        pass
+        """Возвращает подсказку следования по маршруту"""
+
+        # Берем текущую промежуточную точку маршрута и следующую
+        current_target = self.get_current_target_coordinates()
+        next_target = self.get_next_target_coordinates()
+
+        # Вычисляем расстояние до текущей промежуточной
+        distance = self.compute_distance(self.__longitude, self.__latitude, *current_target)
+        distance = round(distance)
+
+        if next_target is not None:
+            # Определяем текущее направление движения и следующее направление движения
+            current_direction = self.compute_direction_clockwise(self.__longitude, self.__latitude, *current_target)
+            next_direction = self.compute_direction_clockwise(*current_target, *next_target)
+
+            direction_delta = round(current_direction) - round(next_direction)
+
+            if 10 < direction_delta < 170 or -350 < direction_delta < -170:
+                direction_tip = "Поверните направо через"
+            elif -190 < direction_delta < -10 or 190 < direction_delta < 350:
+                direction_tip = "Поверните налево через"
+            else:
+                direction_tip = "Продолжайте движение еще"
+        else:
+            direction_tip = "Продолжайте движение еще"
+
+        # Формируем подсказку
+        tip = f"{direction_tip} {distance}м"
+
+        return tip
 
     @staticmethod
-    def compute_direction_angle(current_longitude: float, current_latitude: float,
-                                target_longitude: float, target_latitude: float):
-        """Вычисляет угол представляющий направления движения от одной точки к другой"""
+    def compute_direction_clockwise(longitude, latitude, target_longitude, target_latitude):
+        """Возвращает направление движения между от одной точки к другой - от 0 до 359
+
+        :return: угол от 0 до 359
+        """
+        angle = math.degrees(math.atan2(math.sin(target_longitude - longitude) * math.cos(target_latitude),
+                                          math.cos(latitude) * math.sin(target_latitude) -
+                                          math.sin(latitude) * math.cos(target_latitude) *
+                                          math.cos(target_longitude - longitude)))
+
+        # Если было -90, теперь 270
+        # Если было -179, теперь 181
+        if float(angle) < 0:
+            angle = 360 - abs(angle)
+
+        return angle
+
+    @staticmethod
+    def compute_direction_radians(current_longitude: float, current_latitude: float,
+                                  target_longitude: float, target_latitude: float):
+        """Вычисляет угол представляющий направление движения от одной точки к другой"""
 
         delta_lat = target_latitude - current_latitude
         delta_lon = target_longitude - current_longitude

@@ -26,7 +26,7 @@ class Movable:
             return
 
         # Вычисляем новые координаты (движемся в сторону точки)
-        angle = navigator.compute_direction_angle(*location, *next_point)
+        angle = navigator.compute_direction_radians(*location, *next_point)
 
         longitude = location[0] + self._speed * cos(angle)
         latitude = location[1] + self._speed * sin(angle)
