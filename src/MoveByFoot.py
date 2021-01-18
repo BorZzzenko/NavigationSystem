@@ -6,6 +6,7 @@ class MoveByFoot(Movable):
 
     def __init__(self):
         super().__init__()
-        self._speed = 0.000001
+        # Примерно 2м за одно движение
+        self._speed = 0.000025
         self._min_distance_radius = 5
 

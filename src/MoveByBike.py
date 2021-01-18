@@ -5,5 +5,6 @@ class MoveByBike(Movable):
     """Движение на ведосипеде"""
     def __init__(self):
         super().__init__()
-        self._speed = 0.00001
+        # Примерно 4м за одно движение
+        self._speed = 0.00005
         self._min_distance_radius = 5
