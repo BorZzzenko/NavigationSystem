@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>866</width>
-    <height>511</height>
+    <height>521</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,8 +30,8 @@
    <widget class="QPushButton" name="remove_owner_button">
     <property name="geometry">
      <rect>
-      <x>104</x>
-      <y>270</y>
+      <x>30</x>
+      <y>310</y>
       <width>61</width>
       <height>23</height>
      </rect>
@@ -129,7 +129,7 @@
     <property name="geometry">
      <rect>
       <x>690</x>
-      <y>400</y>
+      <y>420</y>
       <width>161</width>
       <height>23</height>
      </rect>
@@ -168,7 +168,7 @@
     <property name="geometry">
      <rect>
       <x>440</x>
-      <y>360</y>
+      <y>380</y>
       <width>411</width>
       <height>20</height>
      </rect>
@@ -178,7 +178,7 @@
     <property name="geometry">
      <rect>
       <x>440</x>
-      <y>330</y>
+      <y>350</y>
       <width>47</width>
       <height>13</height>
      </rect>
@@ -255,8 +255,8 @@
    <widget class="QLabel" name="geocoding_label">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>330</y>
+      <x>30</x>
+      <y>350</y>
       <width>101</width>
       <height>16</height>
      </rect>
@@ -268,8 +268,8 @@
    <widget class="QLineEdit" name="geocoding_line_edit">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>360</y>
+      <x>30</x>
+      <y>380</y>
       <width>351</width>
       <height>20</height>
      </rect>
@@ -278,8 +278,8 @@
    <widget class="QPushButton" name="find_coordinates_button">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>400</y>
+      <x>30</x>
+      <y>420</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -291,8 +291,8 @@
    <widget class="QPushButton" name="find_address_button">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>400</y>
+      <x>130</x>
+      <y>420</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -304,8 +304,8 @@
    <widget class="QLabel" name="result_label">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>440</y>
+      <x>30</x>
+      <y>460</y>
       <width>71</width>
       <height>16</height>
      </rect>
@@ -318,7 +318,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>460</y>
+      <y>480</y>
       <width>811</width>
       <height>16</height>
      </rect>
@@ -326,6 +326,58 @@
     <property name="text">
      <string/>
     </property>
+   </widget>
+   <widget class="QGroupBox" name="owner_types_box">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>270</y>
+      <width>251</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QRadioButton" name="biker_radio_button">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Велосипедист</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="pedestrian_radio_button">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>0</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Пешеход</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="driver_radio_button">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>0</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Водитель</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
