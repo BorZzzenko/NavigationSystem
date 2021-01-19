@@ -1,5 +1,6 @@
 from BikerFactory import BikerFactory
 from DriverFactory import DriverFactory
+from Geocoder import Geocoder
 from Manager import Manager
 from Owner import Owner
 from PedestrianFactory import PedestrianFactory
@@ -9,6 +10,8 @@ class NavigationSystem:
     """Фасад для всей системы"""
     def __init__(self):
         self.__manager = Manager()
+        self.__geocoder = Geocoder()
+
         self.__factories_dict = {
             "pedestrian": PedestrianFactory(),
             "driver": DriverFactory(),
@@ -41,6 +44,12 @@ class NavigationSystem:
 
     def get_owners(self):
         return self.__manager.get_owners()
+
+    def find_coordinates(self, address: str):
+        return self.__geocoder.find_coordinates(address)
+
+    def find_address(self, longitude: float, latitude: float):
+        return self.__geocoder.find_address(longitude, latitude)
 
     @staticmethod
     def get_current_target_point(owner):

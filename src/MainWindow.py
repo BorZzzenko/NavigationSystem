@@ -10,6 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+from Geocoder import GeocodingExeption
 from NavigationSystem import NavigationSystem
 
 
@@ -84,21 +85,22 @@ class Ui_MainWindow(object):
         self.geocoding_label.setGeometry(QtCore.QRect(30, 350, 101, 16))
         self.geocoding_label.setObjectName("geocoding_label")
         self.geocoding_line_edit = QtWidgets.QLineEdit(self.centralwidget)
-        self.geocoding_line_edit.setGeometry(QtCore.QRect(30, 380, 351, 20))
+        self.geocoding_line_edit.setGeometry(QtCore.QRect(30, 380, 381, 20))
         self.geocoding_line_edit.setObjectName("geocoding_line_edit")
         self.find_coordinates_button = QtWidgets.QPushButton(self.centralwidget)
-        self.find_coordinates_button.setGeometry(QtCore.QRect(30, 420, 75, 23))
+        self.find_coordinates_button.setGeometry(QtCore.QRect(30, 420, 115, 23))
         self.find_coordinates_button.setObjectName("find_coordinates_button")
         self.find_address_button = QtWidgets.QPushButton(self.centralwidget)
-        self.find_address_button.setGeometry(QtCore.QRect(130, 420, 75, 23))
+        self.find_address_button.setGeometry(QtCore.QRect(160, 420, 75, 23))
         self.find_address_button.setObjectName("find_address_button")
         self.result_label = QtWidgets.QLabel(self.centralwidget)
         self.result_label.setGeometry(QtCore.QRect(30, 460, 71, 16))
         self.result_label.setObjectName("result_label")
-        self.geocoding_ouput = QtWidgets.QLabel(self.centralwidget)
-        self.geocoding_ouput.setGeometry(QtCore.QRect(30, 480, 811, 16))
-        self.geocoding_ouput.setText("")
-        self.geocoding_ouput.setObjectName("geocoding_ouput")
+        self.geocoding_output = QtWidgets.QLabel(self.centralwidget)
+        self.geocoding_output.setGeometry(QtCore.QRect(30, 480, 811, 16))
+        self.geocoding_output.setText("")
+        self.geocoding_output.setObjectName("geocoding_output")
+        self.geocoding_output.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
         self.owner_types_box = QtWidgets.QGroupBox(self.centralwidget)
         self.owner_types_box.setGeometry(QtCore.QRect(110, 270, 251, 21))
         self.owner_types_box.setTitle("")
@@ -129,6 +131,9 @@ class Ui_MainWindow(object):
         self.free_owners_list_widget.itemSelectionChanged.connect(self.free_owners_selection)
         self.busy_owners_list_widget.itemSelectionChanged.connect(self.busy_owners_selection)
 
+        self.find_coordinates_button.clicked.connect(self.find_coordinates)
+        self.find_address_button.clicked.connect(self.find_address)
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -148,8 +153,8 @@ class Ui_MainWindow(object):
         self.destination_address_label.setText(_translate("MainWindow", "Адрес:"))
         self.draw_map_button.setText(_translate("MainWindow", "Показать на карте"))
         self.geocoding_label.setText(_translate("MainWindow", "Геокодирование:"))
-        self.find_coordinates_button.setText(_translate("MainWindow", "Координаты"))
-        self.find_address_button.setText(_translate("MainWindow", "Адрес"))
+        self.find_coordinates_button.setText(_translate("MainWindow", "Найти координаты"))
+        self.find_address_button.setText(_translate("MainWindow", "Найти адрес"))
         self.result_label.setText(_translate("MainWindow", "Результат:"))
         self.biker_radio_button.setText(_translate("MainWindow", "Велосипедист"))
         self.pedestrian_radio_button.setText(_translate("MainWindow", "Пешеход"))
@@ -255,6 +260,33 @@ class Ui_MainWindow(object):
         self.update_free_owners_list()
         self.update_busy_owners_list()
         self.update_owner_info()
+
+    # Поиск координат по адресу
+    def find_coordinates(self):
+        address = self.geocoding_line_edit.text()
+
+        try:
+            coordinates = self.__system.find_coordinates(address)
+            self.geocoding_output.setText(f"{coordinates[1]} {coordinates[0]}")
+        except GeocodingExeption as ex:
+            QtWidgets.QMessageBox.warning(MainWindow, "Неверный адрес",
+                                          "Адрес должен содержать 'Барнаул, Россия'")
+
+    # Поиск адреса по координатам
+    def find_address(self):
+        try:
+            coordinates = self.geocoding_line_edit.text().split()
+            latitude = float(coordinates[0])
+            longitude = float(coordinates[1])
+
+            address = self.__system.find_address(longitude, latitude)
+            self.geocoding_output.setText(address)
+        except GeocodingExeption as ex:
+            QtWidgets.QMessageBox.warning(MainWindow, "Неверный запрос",
+                                          "Объект должен находиться в городе Барнауле")
+        except IndexError as ex:
+            QtWidgets.QMessageBox.warning(MainWindow, "Неверный запрос",
+                                          "Неверно заданы координаты")
 
 
 if __name__ == "__main__":
