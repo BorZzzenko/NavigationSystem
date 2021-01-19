@@ -46,3 +46,6 @@ class Owner:
         for observer in self._observers:
             observer.update(self)
 
+    def __str__(self):
+        return type(self).__name__ + " " + str(id(self))
+

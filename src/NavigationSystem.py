@@ -26,6 +26,9 @@ class NavigationSystem:
         owner = self.__get_owner(owner_type)
         self.__manager.add_owner(owner)
 
+    def remove_owner(self, owner):
+        self.__manager.remove_owner(owner)
+
     def give_order(self, owner: Owner, address: str):
         """Выбирает адрес назначения для устройства"""
         self.__manager.give_order(owner, address)
@@ -38,6 +41,10 @@ class NavigationSystem:
 
     def get_owners(self):
         return self.__manager.get_owners()
+
+    @staticmethod
+    def get_current_target_point(owner):
+        return owner.get_navigator().get_current_target_coordinates()
 
     @staticmethod
     def get_location(owner: Owner):

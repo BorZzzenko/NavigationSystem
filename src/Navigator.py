@@ -38,14 +38,17 @@ class Navigator:
 
     def get_current_target_coordinates(self):
         """Возврашает координаты текущей промежуточной точки назначения из построенного маршрута"""
-        lat = self.__remaining_path[0]["latitude"]
-        lon = self.__remaining_path[0]["longitude"]
+        if self.__remaining_path:
+            lat = self.__remaining_path[0]["latitude"]
+            lon = self.__remaining_path[0]["longitude"]
 
-        return lon, lat
+            return lon, lat
+
+        return None
 
     def get_next_target_coordinates(self):
         """Возврашает координаты следующей промежуточной точки назначения из построенного маршрута"""
-        if len(self.__remaining_path) > 1:
+        if self.__remaining_path and len(self.__remaining_path) > 1:
             lat = self.__remaining_path[1]["latitude"]
             lon = self.__remaining_path[1]["longitude"]
 
@@ -64,10 +67,6 @@ class Navigator:
         current_target = self.get_current_target_coordinates()
         next_target = self.get_next_target_coordinates()
 
-        # Вычисляем расстояние до текущей промежуточной
-        distance = self.compute_distance(self.__longitude, self.__latitude, *current_target)
-        distance = round(distance)
-
         if next_target is not None:
             # Определяем текущее направление движения и следующее направление движения
             current_direction = self.compute_direction_clockwise(self.__longitude, self.__latitude, *current_target)
@@ -81,8 +80,14 @@ class Navigator:
                 direction_tip = "Поверните налево через"
             else:
                 direction_tip = "Продолжайте движение еще"
-        else:
+        elif current_target is not None:
             direction_tip = "Продолжайте движение еще"
+        else:
+            return "Точка назначения не задана"
+
+        # Вычисляем расстояние до текущей промежуточной
+        distance = self.compute_distance(self.__longitude, self.__latitude, *current_target)
+        distance = round(distance)
 
         # Формируем подсказку
         tip = f"{direction_tip} {distance}м"

@@ -10,6 +10,8 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+from NavigationSystem import NavigationSystem
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -23,12 +25,12 @@ class Ui_MainWindow(object):
         self.remove_owner_button = QtWidgets.QPushButton(self.centralwidget)
         self.remove_owner_button.setGeometry(QtCore.QRect(30, 310, 61, 23))
         self.remove_owner_button.setObjectName("remove_owner_button")
-        self.free_owners_list_view = QtWidgets.QListView(self.centralwidget)
-        self.free_owners_list_view.setGeometry(QtCore.QRect(30, 70, 141, 171))
-        self.free_owners_list_view.setObjectName("free_owners_list_view")
-        self.busy_owners_list_view = QtWidgets.QListView(self.centralwidget)
-        self.busy_owners_list_view.setGeometry(QtCore.QRect(200, 70, 141, 171))
-        self.busy_owners_list_view.setObjectName("busy_owners_list_view")
+        self.free_owners_list_widget = QtWidgets.QListWidget(self.centralwidget)
+        self.free_owners_list_widget.setGeometry(QtCore.QRect(30, 70, 149, 171))
+        self.free_owners_list_widget.setObjectName("free_owners_list_widget")
+        self.busy_owners_list_widget = QtWidgets.QListWidget(self.centralwidget)
+        self.busy_owners_list_widget.setGeometry(QtCore.QRect(200, 70, 149, 171))
+        self.busy_owners_list_widget.setObjectName("busy_owners_list_widget")
         self.free_owners_label = QtWidgets.QLabel(self.centralwidget)
         self.free_owners_label.setGeometry(QtCore.QRect(30, 30, 131, 16))
         self.free_owners_label.setObjectName("free_owners_label")
@@ -103,6 +105,7 @@ class Ui_MainWindow(object):
         self.owner_types_box.setObjectName("owner_types_box")
         self.biker_radio_button = QtWidgets.QRadioButton(self.owner_types_box)
         self.biker_radio_button.setGeometry(QtCore.QRect(0, 0, 101, 17))
+        self.biker_radio_button.setChecked(True)
         self.biker_radio_button.setObjectName("biker_radio_button")
         self.pedestrian_radio_button = QtWidgets.QRadioButton(self.owner_types_box)
         self.pedestrian_radio_button.setGeometry(QtCore.QRect(100, 0, 101, 17))
@@ -114,6 +117,17 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
+        # Attributes
+        self.__system = NavigationSystem()
+        self.__current_owner = None
+
+        # Connections
+        self.add_owner_button.clicked.connect(self.add_owner)
+        self.remove_owner_button.clicked.connect(self.delete_owner)
+
+        self.free_owners_list_widget.itemSelectionChanged.connect(self.free_owners_selection)
+        self.busy_owners_list_widget.itemSelectionChanged.connect(self.busy_owners_selection)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -140,6 +154,107 @@ class Ui_MainWindow(object):
         self.biker_radio_button.setText(_translate("MainWindow", "Велосипедист"))
         self.pedestrian_radio_button.setText(_translate("MainWindow", "Пешеход"))
         self.driver_radio_button.setText(_translate("MainWindow", "Водитель"))
+
+    # Нажатие на кнопку Добавить
+    def add_owner(self):
+        # Получаем выбранный тип
+        if self.biker_radio_button.isChecked():
+            owner_type = "biker"
+        elif self.pedestrian_radio_button.isChecked():
+            owner_type = "pedestrian"
+        else:
+            owner_type = "driver"
+
+        # Добавляем в систему
+        self.__system.add_owner(owner_type)
+        # Обновляем спсики
+        self.update_free_owners_list()
+        self.update_busy_owners_list()
+
+    # Обновление спсика свободных владельцев
+    def update_free_owners_list(self):
+        self.free_owners_list_widget.clear()
+
+        free_owners = self.__system.get_free_owners()
+
+        for owner in free_owners:
+            item = QtWidgets.QListWidgetItem()
+            item.setText(str(owner))
+            self.free_owners_list_widget.addItem(item)
+
+    # Обновление спсика занятых владельцев
+    def update_busy_owners_list(self):
+        self.busy_owners_list_widget.clear()
+
+        busy_owners = self.__system.get_busy_owners()
+
+        for owner in busy_owners:
+            item = QtWidgets.QListWidgetItem()
+            item.setText(str(owner))
+            self.busy_owners_list_widget.addItem(item)
+
+    # Выбор из списка свободных владельцев
+    def free_owners_selection(self):
+        # Убираем выбранный элемент из списка занятых
+        self.busy_owners_list_widget.clearSelection()
+
+        # Получаемый выбранного владельца
+        index = self.free_owners_list_widget.currentRow()
+        owners = self.__system.get_free_owners()
+
+        if owners:
+            self.__current_owner = owners[index]
+
+        # Обновляем поля с информацией
+        self.update_owner_info()
+
+    # Выбор из списка занятых владельцев
+    def busy_owners_selection(self):
+        # Убираем выбранный элемент из списка свободных
+        self.free_owners_list_widget.clearSelection()
+
+        # Получаемый выбранного владельца
+        index = self.free_owners_list_widget.currentRow()
+        owners = self.__system.get_free_owners()
+
+        if owners:
+            self.__current_owner = owners[index]
+
+        # Обновляем поля с информацией
+        self.update_owner_info()
+
+    # Заполнение лейблов с информацией о владельце
+    def update_owner_info(self):
+        # Если выбран владелец
+        if self.__current_owner:
+            owner_type = type(self.__current_owner).__name__
+            location = self.__system.get_location(self.__current_owner)
+            next_target = self.__system.get_current_target_point(self.__current_owner)
+            navigation_tip = self.__system.get_current_tip(self.__current_owner)
+
+            self.owner_type_output.setText(owner_type)
+            self.owner_location_output.setText(f"{location[1]} {location[0]}")
+
+            if next_target is not None:
+                self.owner_next_target_output.setText(f"{next_target[1]} {next_target[0]}")
+            else:
+                self.owner_next_target_output.setText("Не задано")
+
+            self.owner_nav_tip_output.setText(navigation_tip)
+        else:
+            self.owner_type_output.setText("-")
+            self.owner_location_output.setText("-")
+            self.owner_next_target_output.setText("-")
+            self.owner_nav_tip_output.setText("-")
+
+    # Удаление выбранного владельца
+    def delete_owner(self):
+        self.__system.remove_owner(self.__current_owner)
+        self.__current_owner = None
+
+        self.update_free_owners_list()
+        self.update_busy_owners_list()
+        self.update_owner_info()
 
 
 if __name__ == "__main__":

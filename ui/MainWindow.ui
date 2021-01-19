@@ -40,7 +40,7 @@
      <string>Удалить</string>
     </property>
    </widget>
-   <widget class="QListView" name="free_owners_list_view">
+   <widget class="QListWidget" name="free_owners_list_view">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -50,7 +50,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QListView" name="busy_owners_list_view">
+   <widget class="QListWidget" name="busy_owners_list_widget">
     <property name="geometry">
      <rect>
       <x>200</x>
@@ -350,6 +350,9 @@
      </property>
      <property name="text">
       <string>Велосипедист</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QRadioButton" name="pedestrian_radio_button">
