@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QTimer
 
 from Geocoder import GeocodingException
 from NavigationSystem import NavigationSystem
@@ -128,16 +129,26 @@ class Ui_MainWindow(object):
         self.__current_owner = None
 
         # Connections
+        # ДобавлениеЮ удаление владельцев
         self.add_owner_button.clicked.connect(self.add_owner)
         self.remove_owner_button.clicked.connect(self.delete_owner)
 
+        # Выбор владельца из списка
         self.free_owners_list_widget.itemSelectionChanged.connect(self.free_owners_selection)
         self.busy_owners_list_widget.itemSelectionChanged.connect(self.busy_owners_selection)
 
+        #  Геокодирование
         self.find_coordinates_button.clicked.connect(self.find_coordinates)
         self.find_address_button.clicked.connect(self.find_address)
 
+        # Задание точки
         self.set_destination_button.clicked.connect(self.set_destination)
+
+        # Движение
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.perform_move)
+        one_move_time = 1000
+        self.timer.start(one_move_time)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -313,6 +324,16 @@ class Ui_MainWindow(object):
             QtWidgets.QMessageBox.warning(MainWindow, "Нельзя задать точку",
                                           "Выбранный владелец уже движется.")
 
+        self.update_free_owners_list()
+        self.update_busy_owners_list()
+
+    # Совершить движение всех владельцев
+    def perform_move(self):
+        # Движение
+        self.__system.perform_move()
+
+        # Обновление списков и информации о владельце
+        self.update_owner_info()
         self.update_free_owners_list()
         self.update_busy_owners_list()
 

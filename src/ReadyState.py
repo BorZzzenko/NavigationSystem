@@ -20,4 +20,4 @@ class ReadyState(OwnerState):
         self._owner.change_state(MoveState(self._owner))
 
     def perform_move(self):
-        raise OwnerStateException("Нельзя начать движение. Точка назначения еще не задана")
+        pass
