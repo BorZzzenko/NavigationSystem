@@ -386,6 +386,10 @@ class Ui_MainWindow(object):
         destination = self.__system.get_destination_point(self.__current_owner)
         ax.scatter(*destination, color="green", label="Точка назначения")
 
+        # Наносим здания
+        buildings = ox.footprints_from_place("Barnaul, Russia")
+        buildings.plot(ax=ax, facecolor='khaki', alpha=0.7)
+
         # Добавляем легенду с обозначениями
         handles, labels = ax.get_legend_handles_labels()
         handles.append(path_patch)
