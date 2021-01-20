@@ -34,8 +34,6 @@ class Manager(OwnerObserver):
 
     def give_order(self, owner: Owner, address: str):
         """Выбирает адрес назначения для владельца навигатора"""
-        if owner in self.__busy_owners:
-            return
 
         # Находит координаты по адресу
         longitude, latitude = self.__geocoder.find_coordinates(address)

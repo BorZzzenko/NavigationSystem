@@ -1,4 +1,4 @@
-from OwnerState import OwnerState
+from OwnerState import OwnerState, OwnerStateException
 import ReadyState
 
 
@@ -7,7 +7,7 @@ class MoveState(OwnerState):
         super().__init__(owner)
 
     def set_destination(self, longitude: float, latitude: float):
-        pass
+        raise OwnerStateException("Нельзя задать точку назначения. Объект уже выполняет движение")
 
     def perform_move(self):
         navigator = self._owner.get_navigator()

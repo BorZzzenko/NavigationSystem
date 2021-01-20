@@ -10,8 +10,9 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from Geocoder import GeocodingExeption
+from Geocoder import GeocodingException
 from NavigationSystem import NavigationSystem
+from OwnerState import OwnerStateException
 
 
 class Ui_MainWindow(object):
@@ -70,6 +71,7 @@ class Ui_MainWindow(object):
         self.owner_location_output.setGeometry(QtCore.QRect(440, 130, 381, 16))
         self.owner_location_output.setText("")
         self.owner_location_output.setObjectName("owner_location_output")
+        self.owner_location_output.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
         self.owner_nav_tip_output = QtWidgets.QLabel(self.centralwidget)
         self.owner_nav_tip_output.setGeometry(QtCore.QRect(440, 240, 381, 16))
         self.owner_nav_tip_output.setText("")
@@ -78,6 +80,7 @@ class Ui_MainWindow(object):
         self.owner_next_target_output.setGeometry(QtCore.QRect(440, 190, 381, 16))
         self.owner_next_target_output.setText("")
         self.owner_next_target_output.setObjectName("owner_next_target_output")
+        self.owner_next_target_output.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
         self.draw_map_button = QtWidgets.QPushButton(self.centralwidget)
         self.draw_map_button.setGeometry(QtCore.QRect(440, 270, 121, 23))
         self.draw_map_button.setObjectName("draw_map_button")
@@ -133,6 +136,8 @@ class Ui_MainWindow(object):
 
         self.find_coordinates_button.clicked.connect(self.find_coordinates)
         self.find_address_button.clicked.connect(self.find_address)
+
+        self.set_destination_button.clicked.connect(self.set_destination)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -207,7 +212,7 @@ class Ui_MainWindow(object):
         index = self.free_owners_list_widget.currentRow()
         owners = self.__system.get_free_owners()
 
-        if owners:
+        if owners and index < len(owners):
             self.__current_owner = owners[index]
 
         # Обновляем поля с информацией
@@ -219,10 +224,10 @@ class Ui_MainWindow(object):
         self.free_owners_list_widget.clearSelection()
 
         # Получаемый выбранного владельца
-        index = self.free_owners_list_widget.currentRow()
-        owners = self.__system.get_free_owners()
+        index = self.busy_owners_list_widget.currentRow()
+        owners = self.__system.get_busy_owners()
 
-        if owners:
+        if owners and index < len(owners):
             self.__current_owner = owners[index]
 
         # Обновляем поля с информацией
@@ -268,9 +273,9 @@ class Ui_MainWindow(object):
         try:
             coordinates = self.__system.find_coordinates(address)
             self.geocoding_output.setText(f"{coordinates[1]} {coordinates[0]}")
-        except GeocodingExeption as ex:
+        except GeocodingException as ex:
             QtWidgets.QMessageBox.warning(MainWindow, "Неверный адрес",
-                                          "Адрес должен содержать 'Барнаул, Россия'")
+                                          "Адрес должен содержать 'Барнаул, Россия'.")
 
     # Поиск адреса по координатам
     def find_address(self):
@@ -281,12 +286,35 @@ class Ui_MainWindow(object):
 
             address = self.__system.find_address(longitude, latitude)
             self.geocoding_output.setText(address)
-        except GeocodingExeption as ex:
+        except GeocodingException as ex:
             QtWidgets.QMessageBox.warning(MainWindow, "Неверный запрос",
-                                          "Объект должен находиться в городе Барнауле")
+                                          "Объект должен находиться в городе Барнауле.")
         except IndexError as ex:
             QtWidgets.QMessageBox.warning(MainWindow, "Неверный запрос",
-                                          "Неверно заданы координаты")
+                                          "Неверно заданы координаты.")
+
+    # Задание точки назначения
+    def set_destination(self):
+        # Проверяем выбран ли владелец
+        if self.__current_owner is None:
+            QtWidgets.QMessageBox.warning(MainWindow, "Не выбран владелец",
+                                          "Сначала выберите владельца, которому хотите назначить точку.")
+            return
+
+        address = self.destination_address_line_edit.text()
+
+        # Задаем точку
+        try:
+            self.__system.give_order(self.__current_owner, address)
+        except GeocodingException:
+            QtWidgets.QMessageBox.warning(MainWindow, "Неверный адрес",
+                                          "Адрес должен содержать 'Барнаул, Россия'.")
+        except OwnerStateException:
+            QtWidgets.QMessageBox.warning(MainWindow, "Нельзя задать точку",
+                                          "Выбранный владелец уже движется.")
+
+        self.update_free_owners_list()
+        self.update_busy_owners_list()
 
 
 if __name__ == "__main__":

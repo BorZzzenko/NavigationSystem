@@ -1,5 +1,5 @@
 from MoveState import MoveState
-from OwnerState import OwnerState
+from OwnerState import OwnerState, OwnerStateException
 
 
 class ReadyState(OwnerState):
@@ -20,4 +20,4 @@ class ReadyState(OwnerState):
         self._owner.change_state(MoveState(self._owner))
 
     def perform_move(self):
-        pass
+        raise OwnerStateException("Нельзя начать движение. Точка назначения еще не задана")

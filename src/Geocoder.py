@@ -2,7 +2,7 @@ from GeocodingSearch import GeocodingSearch
 from GeocodingAPI import GeocodingAPI
 
 
-class GeocodingExeption(Exception):
+class GeocodingException(Exception):
     """Исключение при неправильных запросах к Geocoder"""
     pass
 
@@ -26,7 +26,7 @@ class Geocoder(GeocodingSearch):
             self.__initialize_api()
             return self.__geocodingAPI.find_address(longitude, latitude)
         else:
-            raise GeocodingExeption("Координаты находятся за пределами города")
+            raise GeocodingException("Координаты находятся за пределами города")
 
     def find_coordinates(self, address: str):
         """Возвращает координаты по адресу
@@ -40,7 +40,7 @@ class Geocoder(GeocodingSearch):
             self.__initialize_api()
             return self.__geocodingAPI.find_coordinates(address)
         else:
-            raise GeocodingExeption('Адресс должен содержать: "Россия, Барнаул"')
+            raise GeocodingException('Адресс должен содержать: "Россия, Барнаул"')
 
     def __is_valid_address(self, address: str):
         """Проверка что адресс содержит "Россия, Барнаул
