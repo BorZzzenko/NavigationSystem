@@ -387,7 +387,7 @@ class Ui_MainWindow(object):
         ax.scatter(*destination, color="green", label="Точка назначения")
 
         # Наносим здания
-        buildings = ox.footprints_from_place("Barnaul, Russia")
+        buildings = ox.geometries_from_place("Barnaul, Russia", tags={"building": True})
         buildings.plot(ax=ax, facecolor='khaki', alpha=0.7)
 
         # Добавляем легенду с обозначениями
