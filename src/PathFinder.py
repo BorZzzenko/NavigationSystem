@@ -25,6 +25,9 @@ class PathFinder(ABC):
 
         return res
 
+    def get_graph(self):
+        return self._road_graph
+
     @abstractmethod
     def find_path(self, start_longitude: float, start_latitude: float,
                   destination_longitude: float, destination_latitude: float):

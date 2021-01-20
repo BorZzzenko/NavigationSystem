@@ -75,6 +75,11 @@ class NavigationSystem:
         navigator = owner.get_navigator()
         return navigator.get_path()
 
+    @staticmethod
+    def get_graph(owner: Owner):
+        pathfinder = owner.get_path_finder()
+        return pathfinder.get_graph()
+
     def perform_move(self):
         """Запускает движение всех устройств в системе"""
         owners = self.__manager.get_owners()
