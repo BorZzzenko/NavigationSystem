@@ -1,3 +1,6 @@
+#OSM cache
+cache/
+
 # IDE
 .idea
 
