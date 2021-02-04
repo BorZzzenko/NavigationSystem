@@ -1,8 +1,12 @@
 language: python
 python:
   -  "3.8"
+before_install:
+  - sudo apt install libpq-dev
+  - sudo apt install gdal-bin
+  - sudo apt install libgdal-dev
 install:
-  - pip install -r requirements.txt
+  - pip install -r requirements_without_GDAL.txt
   - pip install coverage
 script:
   - cd src
