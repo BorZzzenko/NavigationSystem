@@ -1,8 +1,6 @@
 import math
-from geopy import distance
-import osmnx as ox
 
-from Owner import Owner
+from geopy import distance
 
 
 class Navigator:
@@ -33,7 +31,7 @@ class Navigator:
     def get_path(self):
         return self.__remaining_path
 
-    def set_owner(self, owner: Owner):
+    def set_owner(self, owner):
         self.__owner = owner
 
     def get_current_target_coordinates(self):
@@ -74,9 +72,9 @@ class Navigator:
 
             direction_delta = round(current_direction) - round(next_direction)
 
-            if 10 < direction_delta < 170 or -350 < direction_delta < -170:
+            if 10 < direction_delta < 170 or -350 < direction_delta < -190:
                 direction_tip = "Поверните направо через"
-            elif -190 < direction_delta < -10 or 190 < direction_delta < 350:
+            elif -170 < direction_delta < -10 or 190 < direction_delta < 350:
                 direction_tip = "Поверните налево через"
             else:
                 direction_tip = "Продолжайте движение еще"
