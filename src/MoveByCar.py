@@ -1,5 +1,3 @@
-from math import cos, sin
-
 from Movable import Movable
 
 

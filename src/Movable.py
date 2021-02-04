@@ -1,7 +1,5 @@
 from math import cos, sin
 
-from Navigator import Navigator
-
 
 class Movable:
     """Интерфейс движения"""

@@ -1,4 +1,4 @@
-import Navigator
+from Navigator import Navigator
 from OwnerObserver import OwnerObserver
 from ReadyState import ReadyState
 
@@ -9,7 +9,7 @@ class Owner:
     def __init__(self, start_longitude=83.7813856, start_latitude=53.3448302):
         self._observers = list()
         self._move_action = None
-        self._navigator = Navigator.Navigator(start_longitude, start_latitude)
+        self._navigator = Navigator(start_longitude, start_latitude)
         self._path_finder = None
         self._navigator.set_owner(self)
         self._state = ReadyState(self)
