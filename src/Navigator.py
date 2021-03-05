@@ -56,29 +56,13 @@ class Navigator:
     def get_navigation_tip(self):
         """Возвращает подсказку следования по маршруту"""
 
-        # Берем текущую промежуточную точку маршрута и следующую
-        current_target = self.get_current_target_coordinates()
-        next_target = self.get_next_target_coordinates()
+        direction_tip = self.__get_direction_nav_tip()
 
-        if next_target is not None:
-            # Определяем текущее направление движения и следующее направление движения
-            current_direction = self.compute_direction_clockwise(self.__longitude, self.__latitude, *current_target)
-            next_direction = self.compute_direction_clockwise(*current_target, *next_target)
-
-            direction_delta = round(current_direction) - round(next_direction)
-
-            if 10 < direction_delta < 170 or -350 < direction_delta < -190:
-                direction_tip = "Поверните направо через"
-            elif -170 < direction_delta < -10 or 190 < direction_delta < 350:
-                direction_tip = "Поверните налево через"
-            else:
-                direction_tip = "Продолжайте движение еще"
-        elif current_target is not None:
-            direction_tip = "Продолжайте движение еще"
-        else:
-            return "Точка назначения не задана"
+        if direction_tip is None:
+            return "Точка назначения еще не задана"
 
         # Вычисляем расстояние до текущей промежуточной
+        current_target = self.get_current_target_coordinates()
         distance = self.compute_distance(self.__longitude, self.__latitude, *current_target)
         distance = round(distance)
 
@@ -127,3 +111,26 @@ class Navigator:
     def set_next_target(self):
         """Меняем текущую промежуточную точку"""
         self.__remaining_path.pop(0)
+
+    def __get_direction_nav_tip(self):
+        # Берем текущую промежуточную точку маршрута и следующую
+        current_target = self.get_current_target_coordinates()
+        next_target = self.get_next_target_coordinates()
+
+        if next_target is None and current_target is None:
+            return None
+
+        if next_target is None:
+            return "Продолжайте движение еще"
+
+        current_direction = self.compute_direction_clockwise(self.__longitude, self.__latitude, *current_target)
+        next_direction = self.compute_direction_clockwise(*current_target, *next_target)
+
+        direction_delta = round(current_direction) - round(next_direction)
+
+        if 10 < direction_delta < 170 or -350 < direction_delta < -190:
+            return "Поверните направо через"
+        elif -170 < direction_delta < -10 or 190 < direction_delta < 350:
+            return "Поверните налево через"
+        else:
+            return "Продолжайте движение еще"
