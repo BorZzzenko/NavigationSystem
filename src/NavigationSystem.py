@@ -82,7 +82,7 @@ class NavigationSystem:
 
     def perform_move(self):
         """Запускает движение всех устройств в системе"""
-        owners = self.__manager.get_owners()
+        busy_owners = self.__manager.get_busy_owners()
 
-        for owner in owners:
+        for owner in busy_owners:
             owner.perform_move()
