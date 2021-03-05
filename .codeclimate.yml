@@ -3,7 +3,7 @@ plugins:
   sonar-python:
     enabled: true
     config:
-      minimum_severity: critical
+      minimum_severity: minor
   bandit:
     enabled: true
   pep8:
