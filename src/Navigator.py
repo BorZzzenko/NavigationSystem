@@ -129,8 +129,10 @@ class Navigator:
         direction_delta = round(current_direction) - round(next_direction)
 
         if 10 < direction_delta < 170 or -350 < direction_delta < -190:
-            return "Поверните направо через"
+            direction_tip = "Поверните направо через"
         elif -170 < direction_delta < -10 or 190 < direction_delta < 350:
-            return "Поверните налево через"
+            direction_tip = "Поверните налево через"
         else:
-            return "Продолжайте движение еще"
+            direction_tip = "Продолжайте движение еще"
+
+        return direction_tip
