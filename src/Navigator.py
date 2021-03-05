@@ -59,7 +59,7 @@ class Navigator:
         direction_tip = self.__get_direction_nav_tip()
 
         if direction_tip is None:
-            return "Точка назначения еще не задана"
+            return "Точка назначения не задана"
 
         # Вычисляем расстояние до текущей промежуточной
         current_target = self.get_current_target_coordinates()
