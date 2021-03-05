@@ -5,8 +5,6 @@ from geopy import distance
 
 class Navigator:
     def __init__(self, longitude: float, latitude: float):
-        self.__owner = None
-
         self.__latitude = latitude
         self.__longitude = longitude
 
@@ -30,9 +28,6 @@ class Navigator:
 
     def get_path(self):
         return self.__remaining_path
-
-    def set_owner(self, owner):
-        self.__owner = owner
 
     def get_current_target_coordinates(self):
         """Возврашает координаты текущей промежуточной точки назначения из построенного маршрута"""

@@ -11,7 +11,6 @@ class Owner:
         self._move_action = None
         self._navigator = Navigator(start_longitude, start_latitude)
         self._path_finder = None
-        self._navigator.set_owner(self)
         self._state = ReadyState(self)
 
     def get_path_finder(self):
